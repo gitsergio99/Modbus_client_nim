@@ -1,7 +1,7 @@
 # Modbus_client_nim
 Modbus rtu, tcp client lib for nim programming language.
-Supported ModBus fucntions: 
-                            01 (0x01) Read Coils
+# Supported ModBus fucntions: 
+<                        01 (0x01) Read Coils>
                             02 (0x02) Read Discrete Inputs
                             03 (0x03) Read Holding Registers
                             04 (0x04) Read Input Registers
