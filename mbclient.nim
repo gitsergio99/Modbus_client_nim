@@ -160,7 +160,7 @@ proc mb_request_write_tcp*(dev_adr:uint8,reg_adr:uint16,quantity:uint16,write_da
 
 
 #write data by tcp socket in modbus device
-proc mb_write_from_tcp*(dev_adr:uint8,reg_adr:uint16,quantity:uint16,write_data:seq[uint16],fn:mb_function,soc:Socket):seq[char] =
+proc mb_write_tcp*(dev_adr:uint8,reg_adr:uint16,quantity:uint16,write_data:seq[uint16],fn:mb_function,soc:Socket):seq[char] =
     var
         res = newSeq[char]()
         num_of_bytes_to_recive:int
@@ -209,7 +209,7 @@ proc mb_request_read_write_tcp_f23*(dev_adr:uint8,reg_adr_r:uint16,quantity_r:ui
 
 
     #read/write data by tcp socket function 23
-proc mb_read_write_from_tcp_f23*(dev_adr:uint8,reg_adr_r:uint16,quantity_r:uint16,reg_adr_w:uint16,quantity_w:uint16,write_data:seq[uint16],soc:Socket):seq[char] =
+proc mb_read_write_tcp_f23*(dev_adr:uint8,reg_adr_r:uint16,quantity_r:uint16,reg_adr_w:uint16,quantity_w:uint16,write_data:seq[uint16],soc:Socket):seq[char] =
     var
         res = newSeq[char]()
         num_of_bytes_to_recive:int
@@ -314,7 +314,10 @@ proc mb_write_rtu*(dev_adr:uint8,fn:mb_function,reg_adr:uint16,quantity:uint16,w
     req = mb_request_write_rtu(dev_adr,fn,reg_adr,quantity,write_data)
     point_c = addr(req[0])
     bytes_to_send = req.len
-    bytes_to_recv = 8 #common response from rtu device, when write data have 6 bytes lenth + 2 bytes crc16
+    if fn == mb_function.w_mask_regs:
+        bytes_to_recv = 10
+    else:
+        bytes_to_recv = 8 #common response from rtu device, when write data have 6 bytes lenth + 2 bytes crc16
     when transport is Socket:
         #if transport rtu over tcp
         ret = transport.send(point_c,bytes_to_send)

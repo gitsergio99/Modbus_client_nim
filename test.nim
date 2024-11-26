@@ -27,7 +27,7 @@ srport.open(9600, Parity.None, 8, StopBits.One)
 #    echo recv_str.toHex()
 #replay = mb_read_rtu(1,0,3,mb_function.r_mult_holding_regs,srport)
 #replay = mb_read_write_f23_rtu(1,0,3,10,5,@[uint16(10),uint16(20),uint16(30),uint16(40),uint16(50)],socket)
-replay = mb_write_rtu(1,mb_function.w_mult_holding_regs,0,3,@[uint16(10),uint16(20),uint16(30)],socket)
+replay = mb_write_rtu(1,mb_function.w_mask_regs,0,3,@[uint16(10),uint16(20),uint16(30)],socket)
 echo replay
 srport.close()
 socket.close()
