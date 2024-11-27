@@ -278,7 +278,7 @@ proc bools_pack_to_bytes*(bls:seq[bool]):seq[char] =
         temp_str = temp_str & "1"
       else:
         temp_str = temp_str & "0"
-      echo fmt"num_bit is {j} , str is {temp_str}"
+      #echo fmt"num_bit is {j} , str is {temp_str}"
       j = j + 1
     else:
       tmp = parseBin(temp_str,parsed)
