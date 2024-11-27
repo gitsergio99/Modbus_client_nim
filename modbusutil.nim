@@ -29,11 +29,6 @@ proc bytes_cnt*(bits_num:uint16):int =
     result = int(bits_num) div 8
   return result
 
-#seq of chars to str
-proc seq_to_str*(chars:seq[char]):string =
-  for s in chars:
-    result = result&s
-  return result
 # transform uint16 or uint32 to sequence of chars
 proc cast_u16*(ch:uint16|uint32):seq[char] = 
     return ch.toHex().parseHexStr().toSeq()
