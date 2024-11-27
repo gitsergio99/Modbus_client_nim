@@ -14,5 +14,12 @@ Modbus rtu, tcp client lib for nim programming language.
 <br>
 ***
 ModBus TCP use std\net Socket. ModBus RTU use SerialPort from serial lib or std\net Socket for RTU over TCP.
+# How to use
+## mbclient.nim
+Contains few compleated functions to operate with modbus protocol.
+### mb_read_rtu (dev_adr:uint8,reg_adr:uint16,quantity:uint16,fn:mb_function,transport:Socket|SerialPort):seq[char] :
+<br> Use for read data from ModBus RTU devices (mb fn: 1,2,3,4). Example:
+<br> mb_read_rtu (1,0,7,mb_fucntion.r_coils,serial) -> sequence of chars: Read state of coils 0-6 from device '1' over serial port.
+<br> Result will be sequence contain 1 char(1 byte): 7 coils state packed to 1 byte.
 
 
