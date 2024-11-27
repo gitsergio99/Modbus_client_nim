@@ -58,7 +58,7 @@ proc mb_read_rtu*(dev_adr:uint8,reg_adr:uint16,quantity:uint16,fn:mb_function,tr
         transportS = transport
         #buff = newString(bytes_to_recv)
         buff = newString(3)
-        ret = transportS.write(join(request,""))
+        ret = transportS.write(join(request))
         ret = transportS.read(buff)
         if cast[uint8](buff.toHex.parseHexStr.toSeq()[1]) == uint8(fn.ord) and cast[uint8](buff.toHex.parseHexStr.toSeq()[0]) == dev_adr:
             tmp_str = buff
@@ -275,7 +275,7 @@ proc mb_read_write_f23_rtu*(dev_adr:uint8,reg_adr_r:uint16,quantity_r:uint16,reg
             str = "error code is "&str[2]&" .Or may be wrong address "&str[0]  
     else:
         buff = newString(3)
-        ret = transport.write(join(request,""))
+        ret = transport.write(join(request))
         ret = transport.read(buff)
         if cast[uint8](buff.toHex.parseHexStr.toSeq()[1]) == uint8(23) and cast[uint8](buff.toHex.parseHexStr.toSeq()[0]) == dev_adr:
             tmp_str = buff
@@ -337,7 +337,7 @@ proc mb_write_rtu*(dev_adr:uint8,fn:mb_function,reg_adr:uint16,quantity:uint16,w
             str = "error code is "&tmp_str[2]&" .Or may be wrong address "&tmp_str[0]
     else:
         #if transport Serial port
-        ret = transport.write(join(req,""))
+        ret = transport.write(join(req))
         tmp_str = newString(3)
         ret = transport.read(tmp_str)
         if cast[uint8](tmp_str.toHex.parseHexStr.toSeq()[1]) == uint8(fn.ord) and cast[uint8](tmp_str.toHex.parseHexStr.toSeq()[0]) == dev_adr:
