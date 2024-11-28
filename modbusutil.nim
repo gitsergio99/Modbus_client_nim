@@ -1,8 +1,9 @@
 import std/strutils
-import sequtils
+import std/sequtils
 import macros
 import std/parseutils
-import std/strformat
+#import std/strformat
+import std/math
 
 type 
     mb_function* {.pure.}  = enum 
@@ -22,12 +23,12 @@ proc cast_c*(ch:uint8):char =
     return cast[char](ch)
 
 # count how many bytes need to pack bits
-proc bytes_cnt*(bits_num:uint16):int =
-  if (int(bits_num) mod 8) > 0:
-    result = (int(bits_num) div 8) + 1
-  else:
-    result = int(bits_num) div 8
-  return result
+#proc bytes_cnt*(bits_num:uint16):int =
+#  if (int(bits_num) mod 8) > 0:
+#    result = (int(bits_num) div 8) + 1
+#  else:
+#    result = int(bits_num) div 8
+#  return result
 
 # transform uint16 or uint32 to sequence of chars
 proc cast_u16*(ch:uint16|uint32):seq[char] = 
@@ -151,12 +152,14 @@ proc modbus_write_pdu*(fn:mb_function,reg_adr:uint16,quantity:uint16,write_data:
     res.add(cast_c(fnc))
     res.add(cast_u16(reg_adr))
     res.add(cast_u16(quantity))
-    num_bytes = uint16(bytes_cnt(quantity))
+    #num_bytes = uint16(bytes_cnt(quantity))
+    num_bytes = uint16(ceilDiv(quantity,8))
     res.add(cast_u16(num_bytes)[1])
-    if (num_bytes mod 2) > 0:
-      num_words = (num_bytes div 2) + 1
-    else:
-      num_words = (num_bytes div 2)
+    num_words = uint16(ceilDiv(num_bytes,2))
+    #if (num_bytes mod 2) > 0:
+    #  num_words = (num_bytes div 2) + 1
+    #else:
+    #  num_words = (num_bytes div 2)
     for i in write_data:
       if uint16(data_seq.len) <= num_bytes-1:
         data_seq.add(cast_u16(i)[0])

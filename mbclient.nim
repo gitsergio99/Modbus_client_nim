@@ -173,7 +173,7 @@ proc mb_write_tcp*(dev_adr:uint8,reg_adr:uint16,quantity:uint16,write_data:seq[u
     #echo &"Request is {request}"
     request_pointer = addr(request[0])
     num_of_bytes_to_send = request.len
-    debug num_of_bytes_to_send
+    #debug num_of_bytes_to_send
     #calculate lenth of replay
     if fn in [w_single_coil,w_mult_coils,w_single_holding_reg,w_mult_holding_regs,w_mask_regs]:
         if fn != mb_function.w_mask_regs:
