@@ -1,5 +1,5 @@
-# Modbus_client_nim
-Modbus rtu, tcp client lib for nim programming language.
+# Modbus_master_nim
+Modbus rtu, tcp mster lib for nim programming language.
 ## Supported ModBus fucntions: 
 <br>                                01 (0x01) Read Coils
 <br>                           02 (0x02) Read Discrete Inputs
@@ -15,7 +15,7 @@ Modbus rtu, tcp client lib for nim programming language.
 ***
 ModBus TCP use std\net Socket. ModBus RTU use SerialPort from serial lib or std\net Socket for RTU over TCP.
 # How to use
-## mbclient.nim
+## mbmaster.nim
 Contains few compleated functions to operate with modbus protocol:
 ###### mb_read_rtu (dev_adr,reg_adr,quantity,fn,transport) ->> seq[char]
 <br> Use to read data from Modbus RTU devices (mb fn: 1,2,3,4). Example:

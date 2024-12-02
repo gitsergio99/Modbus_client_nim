@@ -1,7 +1,7 @@
 import std/strformat
 import std/strutils
 import modbusutil
-import mbclient
+import mbmaster
 import std/net
 import serial
 var
