@@ -1,9 +1,5 @@
-import std/strutils
-import std/sequtils
+import std/[strutils,parseutils,math,algorithm,sequtils]
 import macros
-import std/parseutils
-#import std/strformat
-import std/math
 
 type 
     mb_function* {.pure.}  = enum 
@@ -23,12 +19,12 @@ proc cast_c*(ch:uint8):char =
     return cast[char](ch)
 
 # count how many bytes need to pack bits
-#proc bytes_cnt*(bits_num:uint16):int =
-#  if (int(bits_num) mod 8) > 0:
-#    result = (int(bits_num) div 8) + 1
-#  else:
-#    result = int(bits_num) div 8
-#  return result
+proc bytes_cnt*(bits_num:uint16):int =
+  if (int(bits_num) mod 8) > 0:
+    result = (int(bits_num) div 8) + 1
+  else:
+    result = int(bits_num) div 8
+  return result
 
 # transform uint16 or uint32 to sequence of chars
 proc cast_u16*(ch:uint16|uint32):seq[char] = 
@@ -155,11 +151,11 @@ proc modbus_write_pdu*(fn:mb_function,reg_adr:uint16,quantity:uint16,write_data:
     #num_bytes = uint16(bytes_cnt(quantity))
     num_bytes = uint16(ceilDiv(quantity,8))
     res.add(cast_u16(num_bytes)[1])
-    num_words = uint16(ceilDiv(num_bytes,2))
     #if (num_bytes mod 2) > 0:
     #  num_words = (num_bytes div 2) + 1
     #else:
     #  num_words = (num_bytes div 2)
+    num_words = uint16(ceilDiv(num_bytes,2))
     for i in write_data:
       if uint16(data_seq.len) <= num_bytes-1:
         data_seq.add(cast_u16(i)[0])
@@ -205,6 +201,7 @@ proc read_write_pdu_f23* (r_adr:uint16,r_quantity:uint16,w_adr:uint16,w_quantity
   for i in write_data[0..w_quantity-1]:
     res.add(cast_u16(i))
   return res  
+
 
 #transform seq of chars to 16bit regs
 proc seq_of_chars_to_hold_regs*(rgs:seq[char]):seq[int16] = 
@@ -284,6 +281,7 @@ proc bools_pack_to_bytes*(bls:seq[bool]):seq[char] =
       #echo fmt"num_bit is {j} , str is {temp_str}"
       j = j + 1
     else:
+      temp_str.reverse()
       tmp = parseBin(temp_str,parsed)
       res.add(cast_c(parsed))
       temp_str = ""
@@ -295,6 +293,7 @@ proc bools_pack_to_bytes*(bls:seq[bool]):seq[char] =
       for n in (j..7):
         #echo fmt"n is {n} and tmp_str{temp_str}"
         temp_str = temp_str & "0"
+      temp_str.reverse()
       tmp = parseBin(temp_str,parsed)
       res.add(cast_c(parsed))
       temp_str = ""
