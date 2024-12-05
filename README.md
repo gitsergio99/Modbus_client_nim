@@ -1,5 +1,5 @@
 # Modbus_master_nim
-Modbus rtu, tcp mster lib for nim programming language.
+Modbus rtu, tcp master lib for nim programming language.
 ## Supported ModBus fucntions: 
 <br>                                01 (0x01) Read Coils
 <br>                           02 (0x02) Read Discrete Inputs
@@ -39,3 +39,25 @@ Contains few compleated functions to operate with modbus protocol:
 <br> to Modbus TCP devices.
 <br> Also if need only request could use fucntions such as: mb_request_write_tcp, mb_request_read_rtu etc.
 <br> Result of these fucntions is Modbus request.
+# modbus utils library
+<br> modbusutil.nim has lot of useful functions, such as:
+######calc_CRC16(buf: openArray[char|uint8]): uint16
+<br> Calculate Modbus CRC16 value which use in serial communication.
+###### modbus_read_pdu , modbus_write_pdu , read_write_pdu_f23 ->> seq[char]
+<br>Create Modbus PDU(Protocol data unit).
+###### seq_of_chars_to_hold_regs(rgs:seq[char]):seq[int16]
+<br>Transform sequence of chars(bytes) which reads from modbus device to sequence of int16
+###### seq_of_chars_to_floats(rgs:seq[char],float_pattern:array[0..3,int]):seq[float]
+<br>Transform sequence of chars(bytes) which reads from modbus device to sequence of floats.
+<br>Diffrent devices use different formats of float(sequance of bytes in floats).
+<br>By float_pattern you can set sequence of bytes of float like this:
+<br>float_pattern =[0,1,2,3] or float_pattern =[2,3,0,1] or other.
+###### seq_of_float_to_seq_of_chars(flts:seq[float32],float_pattern:array[0..3,int]):seq[char]
+<br> Transform seq of floats to chars(bytes) to write to modbus device.
+###### bytes_to_seq_of_bools(bts:seq[char],quantity:int):seq[bool]
+<br> State of coils and state of discrete inputs packted to bytes by rules of modbus protocol.
+<br> Proc unpack to sequence of bools.
+###### bools_pack_to_bytes*(bls:seq[bool]):seq[char]
+<br> Pack sequence of bools to bytes. Unuseble bits fill by zero.
+
+
