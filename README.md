@@ -41,7 +41,7 @@ Contains few compleated functions to operate with modbus protocol:
 <br> Result of these fucntions is Modbus request.
 # modbus utils library
 <br> modbusutil.nim has lot of useful functions, such as:
-######calc_CRC16(buf: openArray[char|uint8]): uint16
+###### calc_CRC16(buf: openArray[char|uint8]): uint16
 <br> Calculate Modbus CRC16 value which use in serial communication.
 ###### modbus_read_pdu , modbus_write_pdu , read_write_pdu_f23 ->> seq[char]
 <br>Create Modbus PDU(Protocol data unit).
