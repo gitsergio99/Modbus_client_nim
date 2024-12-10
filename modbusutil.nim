@@ -100,23 +100,11 @@ proc crc16_seq*(crc:uint16):seq[char] =
 #create pdu for readable modbus functions
 proc modbus_read_pdu*(fn:mb_function,reg_adr:uint16,quantity:uint16):seq[char] =
   var
-    fnc:uint8
     res = newSeq[char]()
   case fn
-  of r_coils:
-    fnc = 1
-    res.add(cast_c(fnc))
-  of r_discret_inputs:
-    fnc = 2
-    res.add(cast_c(fnc))
-  of r_input_regs:
-    fnc = 4
-    res.add(cast_c(fnc))
-  of r_mult_holding_regs:
-    fnc = 3
-    res.add(cast_c(fnc))
+  of r_coils,r_discret_inputs,r_input_regs,r_mult_holding_regs:
+    res.add(cast_c(uint8(fn.ord)))
   else:
-  #res.setLen(0)
     res.add("Bad ModBus function!".toSeq())
   res.add(cast_u16(reg_adr))
   res.add(cast_u16(quantity))
@@ -133,14 +121,9 @@ proc modbus_write_pdu*(fn:mb_function,reg_adr:uint16,quantity:uint16,write_data:
     num_words:uint16
     data_seq:seq[char]
   case fn
-  of w_single_coil: #quantity no matter, value of coil is write_data[0] from data seq other data no matter
+  of w_single_coil,w_single_holding_reg: #quantity no matter, value of coil is write_data[0] from data seq other data no matter
     fnc = 5 # A value of 0XFF00 requests the coil to be On. A value of 0X0000 requests the coil to be off.
-    res.add(cast_c(fnc))
-    res.add(cast_u16(reg_adr))
-    res.add(cast_u16(write_data[0]))
-  of w_single_holding_reg:
-    fnc = 6 #quantity no matter, value of AO is write_data[0] from data seq other data no matter
-    res.add(cast_c(fnc))
+    res.add(cast_c(uint8(fn.ord)))
     res.add(cast_u16(reg_adr))
     res.add(cast_u16(write_data[0]))
   of w_mult_coils: #quntity is number of coil which you need to write. Bits transfer in bytes. Unused bits you must fill by zero
@@ -148,13 +131,8 @@ proc modbus_write_pdu*(fn:mb_function,reg_adr:uint16,quantity:uint16,write_data:
     res.add(cast_c(fnc))
     res.add(cast_u16(reg_adr))
     res.add(cast_u16(quantity))
-    #num_bytes = uint16(bytes_cnt(quantity))
     num_bytes = uint16(ceilDiv(quantity,8))
     res.add(cast_u16(num_bytes)[1])
-    #if (num_bytes mod 2) > 0:
-    #  num_words = (num_bytes div 2) + 1
-    #else:
-    #  num_words = (num_bytes div 2)
     num_words = uint16(ceilDiv(num_bytes,2))
     for i in write_data:
       if uint16(data_seq.len) <= num_bytes-1:
@@ -263,9 +241,7 @@ proc bytes_to_seq_of_bools*(bts:seq[char],quantity:int):seq[bool] =
 proc bools_pack_to_bytes*(bls:seq[bool]):seq[char] = 
   var
     res = newSeq[char]()
-    #num_of_bytes:int
     bls_len:int
-    #num_of_bit:int = 0
     i:int = 0
     j:int = 0
     temp_str:string
@@ -278,7 +254,6 @@ proc bools_pack_to_bytes*(bls:seq[bool]):seq[char] =
         temp_str = temp_str & "1"
       else:
         temp_str = temp_str & "0"
-      #echo fmt"num_bit is {j} , str is {temp_str}"
       j = j + 1
     else:
       temp_str.reverse()
@@ -289,9 +264,7 @@ proc bools_pack_to_bytes*(bls:seq[bool]):seq[char] =
       i = i - 1
     i = i + 1
     if i == bls_len and j < 7:
-      #echo fmt"j now is {j} and temp_str is {temp_str}"
       for n in (j..7):
-        #echo fmt"n is {n} and tmp_str{temp_str}"
         temp_str = temp_str & "0"
       temp_str.reverse()
       tmp = parseBin(temp_str,parsed)
